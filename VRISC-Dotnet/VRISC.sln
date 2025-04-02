@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRISC-Assembler", "VRISC-Assembler\VRISC-Assembler.csproj", "{D5377A33-0C56-434C-ABBC-D2664506EE02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRISC", "VRISC\VRISC.csproj", "{662C4103-8DA8-4F8E-B3E8-F2060C8D335F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRISC-Emulator", "VRISC-Emulator\VRISC-Emulator.csproj", "{C50BBEBD-17F1-478E-9A6F-469D1532A2BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5377A33-0C56-434C-ABBC-D2664506EE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5377A33-0C56-434C-ABBC-D2664506EE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5377A33-0C56-434C-ABBC-D2664506EE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5377A33-0C56-434C-ABBC-D2664506EE02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662C4103-8DA8-4F8E-B3E8-F2060C8D335F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{662C4103-8DA8-4F8E-B3E8-F2060C8D335F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662C4103-8DA8-4F8E-B3E8-F2060C8D335F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{662C4103-8DA8-4F8E-B3E8-F2060C8D335F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C50BBEBD-17F1-478E-9A6F-469D1532A2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C50BBEBD-17F1-478E-9A6F-469D1532A2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C50BBEBD-17F1-478E-9A6F-469D1532A2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50BBEBD-17F1-478E-9A6F-469D1532A2BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

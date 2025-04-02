@@ -92,7 +92,23 @@ Sets the register to the result of shifting to top of the stack register bits to
 Return from an interrupt.
 
 ## Memory
-Memory is addressed by
+Memory is addressed by a 32 bit unsinged integeter.\
+```
+0x00000000 - 0x00FFFFFF - RAM
+0x01000000 - 0x01FFFFFF - VRAM
+0x02000000 - 0x02FFFFFF - System Page
+0x03000000 - 0x03FFFFFF - Stack
+0x04000000 - 0x04FFFFFF - Program ROM
+```
+
+### System page
+
+| Offset | Size | Name            | Type  | Description                  |     |
+| ------ | ---- | --------------- | ----- | ---------------------------- | --- |
+| 0x00   | 0x04 | Program Counter | Int32 | The current program counter. |     |
+| 0x04   | 0x04 | Carry Flag      | Int32 | The Current carry flag.      |     |
+| 0x08   | 0x04 | Stack Pointer   | Int32 | The item count in the stack. |     |
+
 
 ## Syscalls
 
