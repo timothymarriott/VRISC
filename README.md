@@ -91,6 +91,9 @@ Sets the register to the result of shifting to top of the stack register bits to
 `IRET`\
 Return from an interrupt.
 
+## Memory
+Memory is addressed by
+
 ## Syscalls
 
 ### 0 : EXIT
@@ -105,8 +108,11 @@ Logs the value at the top of the stack. This value also gets added to a list to 
 ### 3 : BLIT
 Request to blit the vram to the screen.
 
-### 5 : INIT
+### 4 : INIT
 Inform the system that the program has initialized.
+
+### 5 : MODE
+Toggles the bit mode.
 
 ### 6 : READ
 Reads the contents of a file and puts it into system memory.
