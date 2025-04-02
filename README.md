@@ -90,3 +90,32 @@ Sets the register to the result of shifting to top of the stack register bits to
 ### IRET
 `IRET`\
 Return from an interrupt.
+
+## Syscalls
+
+### 0 : EXIT
+Exits the system with the error code at the top of the stack.
+
+### 1 : PRINT
+Prints the string in memory at the address stored on the top of the stack.
+
+### 2 : ASSERT
+Logs the value at the top of the stack. This value also gets added to a list to be used in a test suite.
+
+### 3 : BLIT
+Request to blit the vram to the screen.
+
+### 5 : INIT
+Inform the system that the program has initialized.
+
+### 6 : READ
+Reads the contents of a file and puts it into system memory.
+
+
+| Stack Index | Type   | Name         | Description                               |
+| ----------- | ------ | ------------ | ----------------------------------------- |
+| 0           | String | Path         | The string path of the file               |
+| 1           | Int    | Page         | The target page to load to                |
+| 2           | Int    | Offset       | The offset into the page to load into     |
+| 3           | Int    | Chunk Offset | The offset into the file to load from     |
+| 4           | Int    | Chunk Size   | The size of the chunk to load into memory |
