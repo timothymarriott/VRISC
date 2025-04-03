@@ -33,7 +33,7 @@ class Program
             
             DateTime startTime = DateTime.Now;
             
-            byte[] binary = new Assembler(target).Assemble(out var symbols);
+            byte[] binary = new Assembler(File.ReadAllText(target)).Assemble(out var symbols);
 
             File.WriteAllBytes(output, binary);
             

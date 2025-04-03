@@ -57,10 +57,11 @@ public class Emulator
     public OnHaltCallback OnHalt;
     
     
+    
     public Emulator(byte[] executable)
     {
         state = new EmulatorState(this, executable);
-        
+        SysCalls.Create();
     }
     
     public void Run()
@@ -76,8 +77,17 @@ public class Emulator
 
     public void Step()
     {
+        Log.debugInfo = $"0x{state.ProgramCounter:X8}";
+        
         Instruction i = (Instruction)state.memory[state.ProgramCounter];
-        Execute(i, state.memory.GetInt(state.ProgramCounter + 1), out bool hasJumped);
+        int operand = 0;
+        if (InstructionSet.GetInstructionLength(i) > 1)
+        {
+            operand = state.memory.GetInt(state.ProgramCounter + 1);
+            
+        }
+        
+        Execute(i, operand, out bool hasJumped);
         if (!hasJumped)
         {
             state.ProgramCounter += InstructionSet.GetInstructionLength(i);
@@ -86,7 +96,10 @@ public class Emulator
 
     public void Execute(Instruction instruction, int operand, out bool hasJumped)
     {
+        Log.Execution($"{instruction} {(InstructionSet.GetInstructionLength(instruction) == 1 ? "" : $"{operand:X8} ")}at 0x{state.ProgramCounter:X8}");
+        Log.debugInfo = $"{instruction} {(InstructionSet.GetInstructionLength(instruction) == 1 ? "" : $"{operand:X8} ")}at 0x{state.ProgramCounter:X8}";
         int s;
+        
         switch (instruction)
         {
             case Instruction.Bge:
@@ -272,6 +285,7 @@ public class Emulator
                 }
                 else
                 {
+                    //Log.Info($"Writing 0x{state.stack.PeekByte():X2} to 0x{state.Register:X8}");
                     state.memory[state.Register] = state.stack.PopByte();
                 }
                 
@@ -309,82 +323,8 @@ public class Emulator
             case Instruction.Sys:
                 //Console.WriteLine("Calling system call " + Register.ToString());
                 int opcode = state.isLargeMode ? state.LRegister : state.Register;
-                switch (opcode) {
-                    case 0:
-                        int code = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-                        
-                        Log.Info("Application exited with code: " + code.ToString());
-                        state.Running = false;
-                        break;
-                    case 1:
-                        int str_pointer = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-                        string _s = "";
-
-                        for (int l = 0; l < state.memory[str_pointer]; l++)
-                        {
-                            _s += (char)state.memory[str_pointer + 1 + l];
-                        }
-                        
-                        Log.Info("APPLICATION: " + _s);
-                        break;
-                    case 2:
-                        
-                        //Assertations.Add(state.isLargeMode ? Stack.PeekInt() : Stack.Peek());
-                        Log.Info("ASSERT: 0x" + (state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte()).ToString("x2"));
-                        break;
-                    case 3:
-                        state.BlitRequested = true;
-                        break;
-                    case 4:
-                        state.HasInitialized = true;
-                        break;
-                    case 5:
-                        state.isLargeMode = !state.isLargeMode;
-                        break;
-                    case 6:
-                        int path_pointer = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-                        string path = "";
-
-                        for (int l = 0; l < state.memory[path_pointer]; l++)
-                        {
-                            path += (char)state.memory[path_pointer + 1 + l];
-                        }
-
-                        int offset = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-                        int chunkoffset = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-                        int chunksize = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
-
-                        byte[] file_contents = File.ReadAllBytes("data/" + path);
-                        Log.Info($"Loading chunk with size {chunksize} from offset {chunkoffset} into file \"{path}\" at offset {offset}");
-                        int index = 0;
-                        for (int j = chunkoffset; j < chunkoffset + chunksize; j++)
-                        {
-                            if (j >= file_contents.Length)
-                            {
-                                Log.Warning("File chunk size overflowed file contents");
-                                break;
-                            }
-                            byte b = file_contents[j];
-                            
-                            state.memory[offset + index] = b;
-                                
-
-                            index++;
-
-                        }
-
-                        if (state.isLargeMode)
-                        {
-                            state.stack.PushInt(file_contents.Length);
-                        }
-                        else
-                        {
-                            state.stack.PushByte((byte)file_contents.Length);
-                        }
-                        
-                        break;
-                    
-                }
+                SysCalls.SystemCalls[opcode](state);
+                
 
                 break;
             case Instruction.Lshft:
@@ -415,6 +355,8 @@ public class Emulator
 
         }
         hasJumped = false;
+
+        Log.debugInfo = "";
     }
     
 }
@@ -422,6 +364,8 @@ public class Emulator
 
 public class EmulatorState
 {
+    private Emulator owner;
+    
     // Hardware
     public Memory memory;
     public Ram ram;
@@ -449,6 +393,7 @@ public class EmulatorState
 
     public EmulatorState(Emulator owner, byte[] rom)
     {
+        this.owner = owner;
         memory = new Memory();
         ram = new Ram();
         vram = new VRam();
@@ -460,6 +405,13 @@ public class EmulatorState
         memory.regions.Add(systemPage);
         memory.regions.Add(stack);
         memory.regions.Add(programRom);
+
+        int index = 0;
+        foreach (var region in memory.regions)
+        {
+            Console.WriteLine($"{region.GetType().Name} is at {index:X8}");
+            index += region.GetSize();
+        }
 
         LRegister = 0;
         Register = 0;

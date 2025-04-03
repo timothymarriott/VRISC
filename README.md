@@ -133,10 +133,18 @@ Toggles the bit mode.
 ### 6 : READ
 Reads the contents of a file and puts it into system memory.
 
-
 | Stack Index | Type   | Name         | Description                               |
 |-------------| ------ | ------------ | ----------------------------------------- |
 | 0           | String | Path         | The string path of the file               |
 | 1           | Int    | Offset       | The offset into the page to load into     |
 | 2           | Int    | Chunk Offset | The offset into the file to load from     |
 | 3           | Int    | Chunk Size   | The size of the chunk to load into memory |
+
+### 7 : DIS
+Sets the display mode to the value at the top of the stack.
+
+#### Modes
+0 - Text Output (Default)\
+1 - Black and white\
+2 - Palette\
+3 - Bitmap

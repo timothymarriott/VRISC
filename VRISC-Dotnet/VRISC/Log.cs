@@ -9,12 +9,26 @@ using System.Threading.Tasks;
 public static class Log
 {
 
+    public static string debugInfo = "";
+    
     public static void Info(string value)
     {
         ConsoleColor ogForeground = Console.ForegroundColor;
         ConsoleColor ogBackground = Console.BackgroundColor;
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"[INFO] [{DateTime.Now.ToShortTimeString()}] ");
+        Console.Write($"[INFO] [{DateTime.Now.ToShortTimeString()}] [{debugInfo}] ");
+        Console.ForegroundColor = ogForeground;
+        Console.WriteLine($"{value}");
+        Console.ForegroundColor = ogForeground;
+        Console.BackgroundColor = ogBackground;
+    }
+    
+    public static void Execution(string value)
+    {
+        ConsoleColor ogForeground = Console.ForegroundColor;
+        ConsoleColor ogBackground = Console.BackgroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.Write($"[EXEC] [{DateTime.Now.ToShortTimeString()}] ");
         Console.ForegroundColor = ogForeground;
         Console.WriteLine($"{value}");
         Console.ForegroundColor = ogForeground;
@@ -26,7 +40,7 @@ public static class Log
         ConsoleColor ogForeground = Console.ForegroundColor;
         ConsoleColor ogBackground = Console.BackgroundColor;
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"[WARNING] [{DateTime.Now.ToShortTimeString()}] {value}");
+        Console.WriteLine($"[WARNING] [{DateTime.Now.ToShortTimeString()}] [{debugInfo}] {value}");
         Console.ForegroundColor = ogForeground;
         Console.BackgroundColor = ogBackground;
     }
@@ -36,7 +50,7 @@ public static class Log
         ConsoleColor ogForeground = Console.ForegroundColor;
         ConsoleColor ogBackground = Console.BackgroundColor;
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"[ERROR] [{DateTime.Now.ToShortTimeString()}] {value}");
+        Console.WriteLine($"[ERROR] [{DateTime.Now.ToShortTimeString()}] [{debugInfo}] {value}");
         Console.ForegroundColor = ogForeground;
         Console.BackgroundColor = ogBackground;
     }
@@ -49,7 +63,7 @@ public static class Log
         ConsoleColor ogBackground = Console.BackgroundColor;
         Console.ForegroundColor = ConsoleColor.White;
         Console.BackgroundColor = ConsoleColor.Red;
-        Console.WriteLine($"[FATAL] [{DateTime.Now.ToShortTimeString()}] {value}");
+        Console.WriteLine($"[FATAL] [{DateTime.Now.ToShortTimeString()}] [{debugInfo}] {value}");
         Console.ForegroundColor = ogForeground;
         Console.BackgroundColor = ogBackground;
         Console.ReadKey();
@@ -62,7 +76,7 @@ public static class Log
     
     public static void Throw(string value)
     {
-        throw new Exception($"[ERROR] [{DateTime.Now.ToShortTimeString()}] {value}");
+        throw new Exception($"[ERROR] [{DateTime.Now.ToShortTimeString()}] [{debugInfo}] {value}");
         
         
 

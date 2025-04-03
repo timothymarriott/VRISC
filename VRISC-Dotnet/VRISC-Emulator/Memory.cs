@@ -6,6 +6,7 @@ public class Memory
     public byte this[int i] {
         get
         {
+            //Log.Info($"READ 0x{i:X8}");
             int totalSize = 0;
             foreach (var region in regions)
             {
@@ -14,7 +15,10 @@ public class Memory
                 {
                     if (region.permisions.HasFlag(MemoryPerms.READ))
                     {
-                        return region.GetByte(i - totalSize - region.GetSize());
+                        
+                        // Log.Info($"Reading from (0x{totalSize:X8}-0x{region.GetSize():X8})-0x{i:X8}=0x{(i - (totalSize - region.GetSize())):X8}");
+                        
+                        return region.GetByte(i - (totalSize - region.GetSize()));
                     }
                     else
                     {
@@ -37,7 +41,8 @@ public class Memory
                 {
                     if (region.permisions.HasFlag(MemoryPerms.WRITE))
                     {
-                        region.SetByte(i - totalSize - region.GetSize(), value);
+                        
+                        region.SetByte(i - (totalSize - region.GetSize()), value);
                         return;
                     }
                     else
@@ -66,7 +71,7 @@ public class Memory
             {
                 if (region.permisions.HasFlag(MemoryPerms.READ))
                 {
-                    return region.GetInt(i - totalSize - region.GetSize());
+                    return region.GetInt(i - (totalSize - region.GetSize()));
                 }
                 else
                 {
@@ -91,7 +96,7 @@ public class Memory
             {
                 if (region.permisions.HasFlag(MemoryPerms.WRITE))
                 {
-                    region.SetInt(i - totalSize - region.GetSize(), value);
+                    region.SetInt(i - (totalSize - region.GetSize()), value);
                     return;
                 }
                 else
@@ -129,7 +134,7 @@ public abstract class MemoryRegion
 
     public virtual int GetSize()
     {
-        return 0x00FFFFFF;
+        return 0x01000000;
     }
 }
 
@@ -140,20 +145,24 @@ public class ProgramRom : MemoryRegion
     {
         if (address + 4 >= _data.Length || address < 0)
         {
-            Log.Warning("Out of bounds program read.");
-            return 0;
+            Log.Warning($"Out of bounds program read at 0x{address:X8}.");
+            throw new IndexOutOfRangeException();
         }
+        //Log.Error($"Loading {_data[address]:X8} from {address:X8} in program memory");
         return _data.GetInt(address);
     }
 
     public override byte GetByte(int address)
     {
+        
         if (address >= _data.Length || address < 0)
         {
-            Log.Warning("Out of bounds program read.");
-            return 0;
+            Log.Warning($"Out of bounds program read at 0x{address:X8}.");
+            throw new IndexOutOfRangeException();
         }
+        //Log.Error($"Loading {_data[address]:X8} from {address:X8} in program memory");
         return _data[address];
+        
     }
 
     public override void SetInt(int address, int value)
@@ -242,6 +251,7 @@ public class SystemPage : MemoryRegion
     
     public override int GetInt(int address)
     {
+        Log.Warning("Read " + address.ToString());
         switch (address)
         {
             case 0:
