@@ -135,9 +135,8 @@ Reads the contents of a file and puts it into system memory.
 
 
 | Stack Index | Type   | Name         | Description                               |
-| ----------- | ------ | ------------ | ----------------------------------------- |
+|-------------| ------ | ------------ | ----------------------------------------- |
 | 0           | String | Path         | The string path of the file               |
-| 1           | Int    | Page         | The target page to load to                |
-| 2           | Int    | Offset       | The offset into the page to load into     |
-| 3           | Int    | Chunk Offset | The offset into the file to load from     |
-| 4           | Int    | Chunk Size   | The size of the chunk to load into memory |
+| 1           | Int    | Offset       | The offset into the page to load into     |
+| 2           | Int    | Chunk Offset | The offset into the file to load from     |
+| 3           | Int    | Chunk Size   | The size of the chunk to load into memory |

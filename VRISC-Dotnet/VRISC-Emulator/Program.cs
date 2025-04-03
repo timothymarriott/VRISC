@@ -17,13 +17,12 @@ class Program
         
         var rootCommand = new RootCommand("Execute an SRISC binary.")
         {
-            new Option<bool>("--debug", "Should it display the debugger."),
             filePathArg
         };
 
-        rootCommand.Handler = CommandHandler.Create<bool, string>((debug, target) =>
+        rootCommand.Handler = CommandHandler.Create<string>((target) =>
         {
-            
+            new Emulator(File.ReadAllBytes(target)).Run();
         });
 
         await rootCommand.InvokeAsync(args);
