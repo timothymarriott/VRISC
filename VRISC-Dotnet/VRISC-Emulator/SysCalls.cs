@@ -1,26 +1,28 @@
-﻿namespace VRISC.Emulator;
+﻿using VRISC.Emulator.GPU;
+
+namespace VRISC.Emulator;
 
 public static class SysCalls
 {
     public delegate void SysCall(EmulatorState state);
 
-    public static Dictionary<int, SysCall> SystemCalls = new Dictionary<int, SysCall>();
+    public static Dictionary<int, (string, SysCall)> SystemCalls = new Dictionary<int, (string,SysCall)>();
 
-    public static void Create(int index, SysCall call)
+    public static void Create(string name, int index, SysCall call)
     {
         SystemCalls.Add(index, call);
     }
 
     public static void Create()
     {
-        Create(0, (state) =>
+        Create("EXIT", 0, (state) =>
         {
             int code = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
                         
             Log.Info("Application exited with code: " + code.ToString());
             state.Running = false;
         });
-        Create(1, (state) =>
+        Create("PRINT", 1, (state) =>
         {
             int str_pointer = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
             string _s = "";
@@ -32,28 +34,28 @@ public static class SysCalls
                         
             Log.Info("APPLICATION: " + _s);
         });
-        Create(2, (state) =>
+        Create("ASSERT", 2, (state) =>
         {
             Log.Info("ASSERT: 0x" + (state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte()).ToString("x2"));
 
         });
         
-        Create(3, (state) =>
+        Create("BLIT", 3, (state) =>
         {
-            state.BlitRequested = true;
+            state.gpu.Blit();
         });
         
-        Create(4, (state) =>
+        Create("INIT", 4, (state) =>
         {
             state.HasInitialized = true;
         });
         
-        Create(5, (state) =>
+        Create("MODE", 5, (state) =>
         {
             state.isLargeMode = !state.isLargeMode;
         });
         
-        Create(6, (state) =>
+        Create("READ", 6, (state) =>
         {
             int path_pointer = state.isLargeMode ? state.stack.PopInt() : state.stack.PopByte();
             string path = "";
@@ -96,9 +98,11 @@ public static class SysCalls
             }
         });
         
-        Create(7, (state) =>
+        Create("DIS", 7, (state) =>
         {
-            
+            state.gpu.CurrentDisplayMode = (DisplayMode)state.stack.PopInt();
+            state.gpu.width = state.stack.PopInt();
+            state.gpu.height = state.stack.PopInt();
         });
     }
 }

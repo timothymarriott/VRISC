@@ -25,6 +25,7 @@ public static class Log
     
     public static void Execution(string value)
     {
+        
         ConsoleColor ogForeground = Console.ForegroundColor;
         ConsoleColor ogBackground = Console.BackgroundColor;
         Console.ForegroundColor = ConsoleColor.DarkCyan;

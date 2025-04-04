@@ -141,7 +141,8 @@ Reads the contents of a file and puts it into system memory.
 | 3           | Int    | Chunk Size   | The size of the chunk to load into memory |
 
 ### 7 : DIS
-Sets the display mode to the value at the top of the stack.
+Sets the display mode to the value at the top of the stack.\
+Then sets the width and height of the frambuffer to be the next two items on the stack.
 
 #### Modes
 0 - Text Output (Default)\

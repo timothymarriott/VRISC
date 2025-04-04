@@ -68,10 +68,13 @@ public class Emulator
     {
         state.Running = true;
         Log.Info("Starting Emulator...");
+        if(OnStart != null) OnStart();
         while (state.Running)
         {
             Step();
         }
+
+        if(OnStart != null) OnHalt();
         Log.Info("Emulation finished.");
     }
 
@@ -88,6 +91,7 @@ public class Emulator
         }
         
         Execute(i, operand, out bool hasJumped);
+        if (OnStep != null) OnStep();
         if (!hasJumped)
         {
             state.ProgramCounter += InstructionSet.GetInstructionLength(i);
@@ -391,6 +395,8 @@ public class EmulatorState
 
     public bool Running;
 
+    public GPU.GPU gpu;
+
     public EmulatorState(Emulator owner, byte[] rom)
     {
         this.owner = owner;
@@ -405,6 +411,11 @@ public class EmulatorState
         memory.regions.Add(systemPage);
         memory.regions.Add(stack);
         memory.regions.Add(programRom);
+
+        gpu = new GPU.GPU(this)
+        {
+            vram = vram
+        };
 
         int index = 0;
         foreach (var region in memory.regions)

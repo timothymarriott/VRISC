@@ -38,7 +38,7 @@ public static class Extensions
         
         if (stack.Count < 4)
         {
-            Log.Error("STACK EMPTY");
+            Log.Error("Stack is empty.");
             return 0;
         }
         List<byte> bytes = new List<byte>();

@@ -18,21 +18,42 @@ public class GPU
 
     public VRam vram;
 
+
     public int width;
+
     public int height;
+
+    public RenderTexture2D target;
+
+    public bool blitRequested;
     
     
     private EmulatorState owner;
     public GPU(EmulatorState owner)
     {
         this.owner = owner;
+        
     }
 
-    public Image Render()
+
+    public void Blit()
     {
+
+        blitRequested = true;
+
+    }
+
+    public void Render()
+    {
+        if (target.Texture.Width != width || target.Texture.Height != height)
+        {
+            Raylib.UnloadRenderTexture(target);
+            target = Raylib.LoadRenderTexture(width, height);
+            
+        }
         
-        
-        Image output = Raylib.GenImageColor(width, height, Color.Black);
+        Raylib.BeginTextureMode(target);
+        Raylib.ClearBackground(Color.Black);
         switch (CurrentDisplayMode)
         {
             case DisplayMode.BlackAndWhite:
@@ -45,7 +66,7 @@ public class GPU
                     
                     for (int i = 0; i < width * height; i++)
                     {
-                        Raylib.ImageDrawPixel(ref output, i % width, (int)Math.Floor((float)i / (float)width), new Color(vram.GetByte(i), vram.GetByte(i), vram.GetByte(i), (byte)255));
+                        Raylib.DrawPixel(i % width, (int)Math.Floor((float)i / (float)width), new Color(vram.GetByte(i), vram.GetByte(i), vram.GetByte(i), (byte)255));
                     }
                 }
                 break;
@@ -59,13 +80,15 @@ public class GPU
                     
                     for (int i = 0; i < width * height; i+=3)
                     {
-                        Raylib.ImageDrawPixel(ref output, (i/3) % width, (int)Math.Floor((float)(i/3) / (float)width), new Color(vram.GetByte(i), vram.GetByte(i + 1), vram.GetByte(i + 2), (byte)255));
+                        Raylib.DrawPixel((i/3) % width, (int)Math.Floor((float)(i/3) / (float)width), new Color(vram.GetByte(i), vram.GetByte(i + 1), vram.GetByte(i + 2), (byte)255));
                     }
                 }
                 break;
+            
         }
 
-        return output;
+        Raylib.EndTextureMode();
     }
+
     
 }

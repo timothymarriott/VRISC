@@ -25,6 +25,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+assemble
+emulator
 # .NET Core
 project.lock.json
 project.fragment.lock.json
